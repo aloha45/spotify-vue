@@ -1,76 +1,94 @@
 <template>
-<h1>Playlist Genre Search</h1>
-		<form onSubmit={handleSubmit}>
-			<div className="container">
+	<div>
+		<h1>Playlist Genre Search</h1>
+		<button v-on:click="getToken">Test</button>
+		<form>
+			<div class="container">
 				<Dropdown
-					options={genres.listOfGenres}
-					selectedValue={genres.selectedGenre}
-					changed={genreChanged}
+					options="{genres.listOfGenres}"
+					selectedValue="{genres.selectedGenre}"
+					changed="{genreChanged}"
 				/>
 				<Dropdown
-					options={playlist.listofPlaylists}
-					selectedValue={playlist.selectedPlaylist}
-					changed={playlistChanged}
+					options="{playlist.listofPlaylists}"
+					selectedValue="{playlist.selectedPlaylist}"
+					changed="{playlistChanged}"
 				/>
 				<button type="submit">Search</button>
 			</div>
-			<div className="list-container">
-				<Listbox items={tracks.listOfTracks} clicked={listBoxClicked} />
-				{trackDetail && <Details {...trackDetail} />}
+			<div class="list-container">
+				<Listbox items="{tracks.listOfTracks}" clicked="{listBoxClicked}" />
+				<Detail />}
 			</div>
 		</form>
-		</>
+	</div>
 </template>
 
 <script>
-require('dotenv').config()
+	require("dotenv").config();
 
-import Detail from './components/Detail'
-import Dropdown from './components/Dropdown'
-import Listbox from './components/Listbox'
+	import Detail from "./components/Detail";
+	import Dropdown from "./components/Dropdown";
+	import Listbox from "./components/Listbox";
+	import axios from "axios";
 
-export default {
-  name: 'App',
-  components: {
-    Dropdown,
-    Detail,
-    Listbox
-  },
-  data: ()  => ({
-    credentials: {
-      ClientId: "",
-      ClientSecret: "",
-    },
-    token: "",
-    genres: {
-      selectedGenre: "",
-      listOfGenres: [],
-    },
-    playlist: {
-      selectedPlaylist: "",
-      listOfPlaylists: []
-    },
-    tracks: {
-      selectedTrack: "",
-      listOfTracks: []
-    },
-    trackDetail: null
-  }),
-  methods: {
-    getToken() {
-      
-    }
-  }
-}
+	export default {
+		name: "App",
+		components: {
+			Dropdown,
+			Detail,
+			Listbox,
+		},
+		data: () => ({
+			credentials: {
+				ClientId: process.env.VUE_APP_CLIENT_ID,
+				ClientSecret: process.env.VUE_APP_CLIENT_SECRET,
+			},
+			token: "",
+			genres: {
+				selectedGenre: "",
+				listOfGenres: [],
+			},
+			playlist: {
+				selectedPlaylist: "",
+				listOfPlaylists: [],
+			},
+			tracks: {
+				selectedTrack: "",
+				listOfTracks: [],
+			},
+			trackDetail: null,
+		}),
+		methods: {
+			getToken() {
+				console.log(process.env.VUE_APP_CLIENT_ID);
+				axios("https://accounts.spotify.com/api/token", {
+					headers: {
+						"Content-Type": "application/x-www-form-urlencoded",
+						Authorization:
+							"Basic " +
+							btoa(
+								this.credentials.ClientId + ":" + this.credentials.ClientSecret
+							),
+					},
+					data: "grant_type=client_credentials",
+					method: "POST",
+				}).then((tokenResponse) => {
+					this.token = tokenResponse.data.access_token;
+					console.log("token", this.token);
+				});
+			},
+		},
+	};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+	#app {
+		font-family: Avenir, Helvetica, Arial, sans-serif;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+		text-align: center;
+		background-color: #2c3e50;
+		margin-top: 60px;
+	}
 </style>
