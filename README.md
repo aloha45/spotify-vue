@@ -1,5 +1,7 @@
 # spotify-vue
 
+An application accessing the Spotify Web API using Vue.js.
+
 ## Project setup
 ```
 npm install

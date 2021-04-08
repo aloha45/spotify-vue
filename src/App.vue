@@ -1,17 +1,65 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+<h1>Playlist Genre Search</h1>
+		<form onSubmit={handleSubmit}>
+			<div className="container">
+				<Dropdown
+					options={genres.listOfGenres}
+					selectedValue={genres.selectedGenre}
+					changed={genreChanged}
+				/>
+				<Dropdown
+					options={playlist.listofPlaylists}
+					selectedValue={playlist.selectedPlaylist}
+					changed={playlistChanged}
+				/>
+				<button type="submit">Search</button>
+			</div>
+			<div className="list-container">
+				<Listbox items={tracks.listOfTracks} clicked={listBoxClicked} />
+				{trackDetail && <Details {...trackDetail} />}
+			</div>
+		</form>
+		</>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+require('dotenv').config()
+
+import Detail from './components/Detail'
+import Dropdown from './components/Dropdown'
+import Listbox from './components/Listbox'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    Dropdown,
+    Detail,
+    Listbox
+  },
+  data: ()  => ({
+    credentials: {
+      ClientId: "",
+      ClientSecret: "",
+    },
+    token: "",
+    genres: {
+      selectedGenre: "",
+      listOfGenres: [],
+    },
+    playlist: {
+      selectedPlaylist: "",
+      listOfPlaylists: []
+    },
+    tracks: {
+      selectedTrack: "",
+      listOfTracks: []
+    },
+    trackDetail: null
+  }),
+  methods: {
+    getToken() {
+      
+    }
   }
 }
 </script>
