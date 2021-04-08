@@ -81,12 +81,63 @@
 							Authorization: "Bearer " + tokenResponse.data.access_token,
 						},
 					}).then((genreResponse) => {
-            console.log(genreResponse)
+						console.log(genreResponse);
 						// setGenres({
-							// this.genres.selectedGenre = this.genres.selectedGenre,
-							// this.genres.listOfGenres = genreResponse.data.categories.items,
+						// this.genres.selectedGenre = this.genres.selectedGenre
+						this.genres.listOfGenres = genreResponse.data.categories.items;
 						// });
+						console.log(this.genres.listOfGenres[0]);
 					});
+				});
+			},
+			genreChanged(val) {
+				// setGenres({
+				this.genres.selectedGenre = val;
+				// listOfGenres: genres.listOfGenres,
+				// });
+
+				axios(
+					`https://api.spotify.com/v1/browse/categories/${val}/playlists?limit=10`,
+					{
+						method: "GET",
+						headers: { Authorization: "Bearer " + this.token },
+					}
+				).then((playlistResponse) => {
+					console.log("playlist", playlistResponse);
+					// setPlaylist({
+					// selectedPlaylist: playlist.selectedPlaylist,
+					this.playlist.listofPlaylists = playlistResponse.data.playlists.items;
+					// });
+				});
+			},
+			playlistChanged(val) {
+				this.playlist.selectedPlaylist = val;
+				// listofPlaylists: playlist.listofPlaylists,
+			},
+			listBoxClicked(val) {
+				const currentTracks = [...this.tracks.listOfTracks];
+				const trackInfo = currentTracks.filter((t) => t.track.id === val);
+				console.log("trackInfo", trackInfo);
+				console.log(trackInfo[0].track.external_urls.spotify);
+				this.trackDetail = trackInfo[0].track;
+			},
+			handleSubmit(e) {
+				e.preventDefault();
+
+				axios(
+					`https://api.spotify.com/v1/playlists/${this.playlist.selectedPlaylist}/tracks?limit=10`,
+					{
+						method: "GET",
+						headers: {
+							Authorization: "Bearer " + this.token,
+						},
+					}
+				).then((tracksResponse) => {
+					console.log("tracks", tracksResponse);
+					// setTracks({
+					// selectedTrack: tracks.selectedTrack,
+					this.tracks.listOfTracks = tracksResponse.data.items;
+					// });
 				});
 			},
 		},

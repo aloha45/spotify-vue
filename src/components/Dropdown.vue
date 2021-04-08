@@ -1,9 +1,9 @@
 <template>
 	<div>
     <h1>Dropdown Component</h1>
-		<select value="{props.selectedValue}" onChange="{dropdownChange}">
+		<select value="selectedValue" on:change="dropdownChange">
 			{props.options.map((item, idx) => (
-			<option key="{idx}" value="{item.id}">
+			<option v-for="item in options" :key="item.idx" value="item.id">
 				{item.name}
 			</option>
 			))}
