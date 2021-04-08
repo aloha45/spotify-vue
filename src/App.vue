@@ -5,20 +5,20 @@
 		<form>
 			<div class="container">
 				<Dropdown
-					options="{genres.listOfGenres}"
-					selectedValue="{genres.selectedGenre}"
-					changed="{genreChanged}"
+					:options="genres.listOfGenres"
+					:selectedValue="genres.selectedGenre"
+					:changed="genreChanged"
 				/>
 				<Dropdown
-					options="{playlist.listofPlaylists}"
-					selectedValue="{playlist.selectedPlaylist}"
-					changed="{playlistChanged}"
+					:options="playlist.listOfPlaylists"
+					:selectedValue="playlist.selectedPlaylist"
+					:changed="playlistChanged"
 				/>
 				<button type="submit">Search</button>
 			</div>
 			<div class="list-container">
-				<Listbox items="{tracks.listOfTracks}" clicked="{listBoxClicked}" />
-				<Detail />}
+				<Listbox :items="tracks.listOfTracks" :clicked="listBoxClicked" />
+				<Detail />
 			</div>
 		</form>
 	</div>
@@ -61,7 +61,6 @@
 		}),
 		methods: {
 			getToken() {
-				console.log(process.env.VUE_APP_CLIENT_ID);
 				axios("https://accounts.spotify.com/api/token", {
 					headers: {
 						"Content-Type": "application/x-www-form-urlencoded",
@@ -76,6 +75,18 @@
 				}).then((tokenResponse) => {
 					this.token = tokenResponse.data.access_token;
 					console.log("token", this.token);
+					axios("https://api.spotify.com/v1/browse/categories?locale=sv_US", {
+						method: "GET",
+						headers: {
+							Authorization: "Bearer " + tokenResponse.data.access_token,
+						},
+					}).then((genreResponse) => {
+            console.log(genreResponse)
+						// setGenres({
+							// this.genres.selectedGenre = this.genres.selectedGenre,
+							// this.genres.listOfGenres = genreResponse.data.categories.items,
+						// });
+					});
 				});
 			},
 		},
